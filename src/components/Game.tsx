@@ -214,16 +214,18 @@ const Game: React.FC = () => {
         // Remover frutas originales
         World.remove(engine.world, [bodyA, bodyB]);
 
-        // Crear nueva fruta
-        const newFruitType = FRUITS[newFruitId];
-        const newFruit = createFruitBody(newFruitType, newX, newY);
-        World.add(engine.world, newFruit);
+        // Crear nueva fruta solo si no es la más grande
+        if (newFruitId < FRUITS.length) {
+            const newFruitType = FRUITS[newFruitId];
+            const newFruit = createFruitBody(newFruitType, newX, newY);
+            World.add(engine.world, newFruit);
 
-        // Actualizar puntuación
-        setGameState(prev => ({
-            ...prev,
-            score: prev.score + newFruitType.points
-        }));
+            // Actualizar puntuación
+            setGameState(prev => ({
+                ...prev,
+                score: prev.score + newFruitType.points
+            }));
+        }
     };
 
     const checkGameOver = (fruit: Matter.Body) => {

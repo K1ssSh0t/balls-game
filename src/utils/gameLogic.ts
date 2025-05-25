@@ -21,10 +21,12 @@ export const GAME_CONFIG = {
 };
 
 export const getRandomStartingFruit = (): FruitType => {
-  // Solo permite las primeras 5 frutas como inicio
-  return FRUITS[Math.floor(Math.random() * Math.min(5, FRUITS.length))];
+  // Excluir la fruta más grande para el drop inicial
+  const maxIndex = Math.min(3, FRUITS.length - 1);
+  return FRUITS[Math.floor(Math.random() * maxIndex)];
 };
 
+// Esta función solo se usa para merges
 export const getNextFruitId = (currentId: number): number | null => {
   return currentId < FRUITS.length - 1 ? currentId + 1 : null;
 };
