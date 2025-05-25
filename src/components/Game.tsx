@@ -265,31 +265,41 @@ const Game: React.FC = () => {
     };
 
     return (
-        <div className="game-container">
-            {/* UI del juego */}
-            <div className="game-header">
-                <div className="score">Puntuación: {gameState.score}</div>
-                <div className="next-fruit">
-                    <span>Siguiente: </span>
-                    <img
-                        src={gameState.nextFruit.imagePath}
-                        alt={gameState.nextFruit.name}
-                        width={40}
-                        height={40}
-                    />
+        <div className="w-full h-screen flex items-center justify-center bg-gray-900">
+            <div className="relative flex gap-8">
+                {/* Área principal del juego */}
+                <div className="bg-gray-100 rounded-lg  w-[800px] h-[600px]">
+                    <div ref={sceneRef} className="w-full h-full" />
+                </div>
+
+                {/* Marcador lateral */}
+                <div className="w-48 h-full flex flex-col gap-4">
+                    <div className="bg-gray-800 rounded-lg p-4 sticky top-4">
+                        <div className="text-2xl font-bold text-white mb-4">Puntuación: {gameState.score}</div>
+                        <div className="flex flex-col items-center gap-2">
+                            <span className="text-white">Siguiente:</span>
+                            <img
+                                src={gameState.nextFruit.imagePath}
+                                alt={gameState.nextFruit.name}
+                                className="w-12 h-12"
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* Canvas del juego */}
-            <div className="game-area" ref={sceneRef} />
-
             {/* Game Over Modal */}
             {gameState.gameOver && (
-                <div className="game-over-modal">
-                    <div className="modal-content">
-                        <h2>¡Juego Terminado!</h2>
-                        <p>Puntuación final: {gameState.score}</p>
-                        <button onClick={resetGame}>Jugar de Nuevo</button>
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white rounded-lg p-8 flex flex-col items-center gap-4">
+                        <h2 className="text-2xl font-bold">¡Juego Terminado!</h2>
+                        <p className="text-xl">Puntuación final: {gameState.score}</p>
+                        <button
+                            onClick={resetGame}
+                            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                        >
+                            Jugar de Nuevo
+                        </button>
                     </div>
                 </div>
             )}

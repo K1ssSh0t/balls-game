@@ -1,5 +1,5 @@
 
-import './App.css'
+
 import Game from './components/Game'
 
 function App() {
@@ -7,11 +7,7 @@ function App() {
 
   return (
     <>
-      <div>
-
-      </div>
-
-      <div className="card">
+      <div className=" flex flex-col items-center justify-center min-h-screen bg-gray-100">
         <Game />
       </div>
 
