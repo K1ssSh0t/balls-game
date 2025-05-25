@@ -1,8 +1,11 @@
-import { APITester } from "./APITester";
+import { APITester } from "./components/APITester";
+import SuikaGame from "./components/GameEngine";
+
 import "./index.css";
 
 import logo from "./logo.svg";
 import reactLogo from "./react.svg";
+
 
 export function App() {
   return (
@@ -24,7 +27,7 @@ export function App() {
       <p>
         Edit <code className="bg-[#1a1a1a] px-2 py-1 rounded font-mono">src/App.tsx</code> and save to test HMR
       </p>
-      <APITester />
+      <SuikaGame />
     </div>
   );
 }
