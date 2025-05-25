@@ -98,16 +98,16 @@ const Game: React.FC = () => {
         World.add(engine.world, [ground, leftWall, rightWall, gameOverLine, dropGuide]);
     };
 
-    const setupControls = (render: Render, engine: Engine) => {
-        const mouse = Mouse.create(render.canvas);
-        const mouseConstraint = MouseConstraint.create(engine, {
-            mouse: mouse,
-            constraint: {
-                stiffness: 0.2,
-                render: { visible: false }
-            }
-        });
-        World.add(engine.world, mouseConstraint);
+    const setupControls = (render: Render, _engine: Engine) => {
+        // const mouse = Mouse.create(render.canvas);
+        // const mouseConstraint = MouseConstraint.create(engine, {
+        //     mouse: mouse,
+        //     constraint: {
+        //         stiffness: 0.2,
+        //         render: { visible: false }
+        //     }
+        // });
+        // World.add(engine.world, mouseConstraint);
 
         // Controles de mouse
         render.canvas.addEventListener('mousemove', handleMouseMove);
