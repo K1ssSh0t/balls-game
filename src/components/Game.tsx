@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Engine, Render, World, Bodies, Events, Runner, Mouse, MouseConstraint } from 'matter-js';
+import { Engine, Render, World, Bodies, Events, Runner, Mouse, MouseConstraint, Body } from 'matter-js';
 import type { FruitType, GameState } from '../types/game';
 import { FRUITS, GAME_CONFIG, getRandomStartingFruit, getNextFruitId } from '../utils/gameLogic';
 
@@ -8,6 +8,7 @@ const Game: React.FC = () => {
     const engineRef = useRef<Engine | null>(null);
     const renderRef = useRef<Render | null>(null);
     const runnerRef = useRef<Runner | null>(null);
+    const dropPositionRef = useRef(GAME_CONFIG.width / 2);  // Nueva referencia
 
     const [gameState, setGameState] = useState<GameState>({
         score: 0,
@@ -77,7 +78,7 @@ const Game: React.FC = () => {
         });
 
         // Agregar línea de game over (invisible para la física pero visible para el jugador)
-        const gameOverLine = Bodies.rectangle(width / 2, GAME_CONFIG.dropLineY + 50, width - 20, 2, {
+        const gameOverLine = Bodies.rectangle(width / 2, GAME_CONFIG.dropLineY + 50, width - 40, 2, {
             isStatic: true,
             isSensor: true,
             render: {
@@ -86,7 +87,16 @@ const Game: React.FC = () => {
             }
         });
 
-        World.add(engine.world, [ground, leftWall, rightWall, gameOverLine]);
+        // Agregar guía de drop
+        const dropGuide = Bodies.rectangle(width / 2, GAME_CONFIG.dropLineY, 2, 20, {
+            isStatic: true,
+            isSensor: true,
+            render: {
+                fillStyle: 'rgba(0, 255, 0, 0.5)'
+            }
+        });
+
+        World.add(engine.world, [ground, leftWall, rightWall, gameOverLine, dropGuide]);
     };
 
     const setupControls = (render: Render, engine: Engine) => {
@@ -107,15 +117,34 @@ const Game: React.FC = () => {
     };
 
     const handleMouseMove = (e: MouseEvent) => {
-        if (!renderRef.current) return;
+        if (!renderRef.current || !engineRef.current) return;
 
+        // Obtener la posición del mouse relativa al canvas
         const rect = renderRef.current.canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
+
+        // Convertir la posición del mouse a coordenadas del juego
+        const gameX = (x / rect.width) * GAME_CONFIG.width;
+
+        // Limitar la posición entre los muros
         const clampedX = Math.max(
-            gameState.nextFruit.radius + GAME_CONFIG.wallThickness,
-            Math.min(GAME_CONFIG.width - gameState.nextFruit.radius - GAME_CONFIG.wallThickness, x)
+            GAME_CONFIG.wallThickness + 30,
+            Math.min(GAME_CONFIG.width - GAME_CONFIG.wallThickness - 30, gameX)
         );
+
         setDropPosition(clampedX);
+        dropPositionRef.current = clampedX;  // Actualizar la referencia
+
+        // Actualizar guía visual
+        const dropGuide = engineRef.current.world.bodies.find(
+            body => body.render.fillStyle === 'rgba(0, 255, 0, 0.5)'
+        );
+        if (dropGuide) {
+            Body.setPosition(dropGuide, {
+                x: clampedX,
+                y: GAME_CONFIG.dropLineY
+            });
+        }
     };
 
     const handleClick = () => {
@@ -127,16 +156,19 @@ const Game: React.FC = () => {
     const dropFruit = () => {
         if (!engineRef.current || gameState.gameOver) return;
 
-        const fruit = createFruitBody(gameState.nextFruit, dropPosition, GAME_CONFIG.dropLineY);
-        World.add(engineRef.current.world, fruit);
+        const fruit = createFruitBody(
+            gameState.nextFruit,
+            dropPositionRef.current,  // Usar la referencia en lugar del estado
+            GAME_CONFIG.dropLineY
+        );
 
-        // Actualizar siguiente fruta
+        World.add(engineRef.current.world, [fruit]);
+
         setGameState(prev => ({
             ...prev,
             nextFruit: getRandomStartingFruit()
         }));
 
-        // Verificar game over después de un tiempo
         setTimeout(() => checkGameOver(fruit), 2000);
     };
 
