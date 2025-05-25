@@ -182,11 +182,12 @@ const Game: React.FC = () => {
         return Bodies.circle(x, y, fruitType.radius, {
             label: `fruit-${fruitType.id}`,
             render: {
-                sprite: {
-                    texture: fruitType.imagePath,
-                    xScale: (fruitType.radius * 2) / 100,  // Ajustamos la escala para que coincida con el diámetro
-                    yScale: (fruitType.radius * 2) / 100   // Dividimos por 100 asumiendo que la imagen original es de 100x100px
-                }
+                // sprite: {
+                //     texture: fruitType.imagePath,
+                //     xScale: (fruitType.radius * 2) / 100,  // Ajustamos la escala para que coincida con el diámetro
+                //     yScale: (fruitType.radius * 2) / 100   // Dividimos por 100 asumiendo que la imagen original es de 100x100px
+                // }
+                fillStyle: fruitType.color,
             },
             restitution: GAME_CONFIG.restitution,
             friction: GAME_CONFIG.friction
