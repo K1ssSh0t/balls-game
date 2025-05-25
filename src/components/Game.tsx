@@ -76,7 +76,17 @@ const Game: React.FC = () => {
             render: { fillStyle: '#8B4513' }
         });
 
-        World.add(engine.world, [ground, leftWall, rightWall]);
+        // Agregar línea de game over (invisible para la física pero visible para el jugador)
+        const gameOverLine = Bodies.rectangle(width / 2, GAME_CONFIG.dropLineY + 50, width - 20, 2, {
+            isStatic: true,
+            isSensor: true,
+            render: {
+                fillStyle: 'rgba(255, 0, 0, 0.5)',
+                opacity: 0.5
+            }
+        });
+
+        World.add(engine.world, [ground, leftWall, rightWall, gameOverLine]);
     };
 
     const setupControls = (render: Render, engine: Engine) => {
@@ -134,11 +144,14 @@ const Game: React.FC = () => {
         return Bodies.circle(x, y, fruitType.radius, {
             label: `fruit-${fruitType.id}`,
             render: {
-                sprite: {
-                    texture: fruitType.imagePath, // Usar tu imagen personalizada
-                    xScale: (fruitType.radius * 2) / 100, // Ajustar escala según el tamaño de tu imagen
-                    yScale: (fruitType.radius * 2) / 100
-                }
+                // sprite: {
+                //     // texture: fruitType.imagePath, // Usar tu imagen personalizada
+                //     // // xScale: (fruitType.radius * 2) / 100, // Ajustar escala según el tamaño de tu imagen
+                //     // // yScale: (fruitType.radius * 2) / 100
+                //     // xScale: 0.5, // Ajusta según el tamaño de tu imagen
+                //     // yScale: 0.5
+                // }
+                fillStyle: fruitType.color
             },
             restitution: GAME_CONFIG.restitution,
             friction: GAME_CONFIG.friction
