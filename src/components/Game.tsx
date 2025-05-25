@@ -8,16 +8,15 @@ const Game: React.FC = () => {
     const engineRef = useRef<Engine | null>(null);
     const renderRef = useRef<Render | null>(null);
     const runnerRef = useRef<Runner | null>(null);
-    const dropPositionRef = useRef(GAME_CONFIG.width / 2);  // Nueva referencia
+    const dropPositionRef = useRef(GAME_CONFIG.width / 2);
+    const nextFruitRef = useRef(getRandomStartingFruit()); // Add this new ref
 
     const [gameState, setGameState] = useState<GameState>({
         score: 0,
         gameOver: false,
-        nextFruit: getRandomStartingFruit(),
+        nextFruit: nextFruitRef.current, // Initialize with ref value
         level: 1
     });
-
-    const [, setDropPosition] = useState(GAME_CONFIG.width / 2);
 
     useEffect(() => {
         if (!sceneRef.current) return;
@@ -132,7 +131,7 @@ const Game: React.FC = () => {
             Math.min(GAME_CONFIG.width - GAME_CONFIG.wallThickness - 30, gameX)
         );
 
-        setDropPosition(clampedX);
+
         dropPositionRef.current = clampedX;  // Actualizar la referencia
 
         // Actualizar guía visual
@@ -156,17 +155,24 @@ const Game: React.FC = () => {
     const dropFruit = () => {
         if (!engineRef.current || gameState.gameOver) return;
 
+        // Use the current nextFruit from ref
+        const currentFruit = nextFruitRef.current;
+
         const fruit = createFruitBody(
-            gameState.nextFruit,
-            dropPositionRef.current,  // Usar la referencia en lugar del estado
+            currentFruit,
+            dropPositionRef.current,
             GAME_CONFIG.dropLineY
         );
 
         World.add(engineRef.current.world, [fruit]);
 
+        // Generate new fruit and update both ref and state
+        const newNextFruit = getRandomStartingFruit();
+        nextFruitRef.current = newNextFruit;
+
         setGameState(prev => ({
             ...prev,
-            nextFruit: getRandomStartingFruit()
+            nextFruit: newNextFruit
         }));
 
         setTimeout(() => checkGameOver(fruit), 2000);
@@ -239,10 +245,14 @@ const Game: React.FC = () => {
         const fruits = allBodies.filter(body => body.label.startsWith('fruit-'));
         World.remove(engineRef.current.world, fruits);
 
+        // Reset next fruit ref and state together
+        const initialFruit = getRandomStartingFruit();
+        nextFruitRef.current = initialFruit;
+
         setGameState({
             score: 0,
             gameOver: false,
-            nextFruit: getRandomStartingFruit(),
+            nextFruit: initialFruit,
             level: 1
         });
     };
