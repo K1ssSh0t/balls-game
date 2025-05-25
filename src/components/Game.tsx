@@ -17,7 +17,7 @@ const Game: React.FC = () => {
         level: 1
     });
 
-    const [dropPosition, setDropPosition] = useState(GAME_CONFIG.width / 2);
+    const [, setDropPosition] = useState(GAME_CONFIG.width / 2);
 
     useEffect(() => {
         if (!sceneRef.current) return;
@@ -176,15 +176,15 @@ const Game: React.FC = () => {
         return Bodies.circle(x, y, fruitType.radius, {
             label: `fruit-${fruitType.id}`,
             render: {
-                // sprite: {
-                //     // texture: fruitType.imagePath, // Usar tu imagen personalizada
-                //     // // xScale: (fruitType.radius * 2) / 100, // Ajustar escala según el tamaño de tu imagen
-                //     // // yScale: (fruitType.radius * 2) / 100
-                //     // xScale: 0.5, // Ajusta según el tamaño de tu imagen
-                //     // yScale: 0.5
-                // }
-                fillStyle: fruitType.color
+                sprite: {
+                    texture: fruitType.imagePath,
+                    // xScale: (fruitType.radius * 2) / 100,
+                    // yScale: (fruitType.radius * 2) / 100
+                    xScale: (fruitType.radius), // Ajustar escala para que se vea bien
+                    yScale: (fruitType.radius)
+                }
             },
+            // chamfer: { radius: fruitType.radius }, // Suavizar bordes de colisión (no soportado por IBodyDefinition)
             restitution: GAME_CONFIG.restitution,
             friction: GAME_CONFIG.friction
         });
