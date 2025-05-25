@@ -178,13 +178,10 @@ const Game: React.FC = () => {
             render: {
                 sprite: {
                     texture: fruitType.imagePath,
-                    // xScale: (fruitType.radius * 2) / 100,
-                    // yScale: (fruitType.radius * 2) / 100
-                    xScale: (fruitType.radius), // Ajustar escala para que se vea bien
-                    yScale: (fruitType.radius)
+                    xScale: (fruitType.radius * 2) / 100,  // Ajustamos la escala para que coincida con el diámetro
+                    yScale: (fruitType.radius * 2) / 100   // Dividimos por 100 asumiendo que la imagen original es de 100x100px
                 }
             },
-            // chamfer: { radius: fruitType.radius }, // Suavizar bordes de colisión (no soportado por IBodyDefinition)
             restitution: GAME_CONFIG.restitution,
             friction: GAME_CONFIG.friction
         });
