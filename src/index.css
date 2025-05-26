@@ -1,2 +1,11 @@
 @import "tailwindcss";
 
+@layer base {
+    body {
+        @apply h-[100vh] m-0 overflow-hidden bg-[url('/background.jpg')] bg-cover flex flex-col justify-center;
+    }
+
+    canvas {
+        @apply rounded-[20px];
+    }
+}
