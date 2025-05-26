@@ -28,6 +28,7 @@ class Main extends Phaser.Scene {
   ceiling!: MatterJS.BodyType;
   gameOver = false;
   renderTexture!: Phaser.GameObjects.RenderTexture;
+  nextFruit!: Fruit;
 
   constructor() {
     super({ key: 'Main' });
@@ -60,8 +61,6 @@ class Main extends Phaser.Scene {
         }
       }
     });
-
-    this.game.events.emit('nextFruitChanged', fruit);
   }
 
   setDropperX(x: number) {
@@ -155,6 +154,7 @@ class Main extends Phaser.Scene {
       this.scene.restart();
     });
 
+    this.nextFruit = fruits[Math.floor(Math.random() * 5)];
     this.dropper = this.add.image(this.input.activePointer.x, 0, fruits[0].name);
     const glow = this.dropper.postFX.addGlow(0x99ddff);
     this.tweens.addCounter({
@@ -169,6 +169,7 @@ class Main extends Phaser.Scene {
     });
 
     this.updateDropper(fruits[0]);
+    this.game.events.emit('nextFruitChanged', this.nextFruit);
 
     this.ceiling = this.matter.add.rectangle(width / 2, 100, width, 200, { isStatic: true });
 
@@ -197,8 +198,9 @@ class Main extends Phaser.Scene {
       const gameObject = this.addFruit(this.dropper.x, this.dropper.y, currentFruit);
       this.group.add(gameObject);
 
-      const nextFruit = fruits[Math.floor(Math.random() * 5)];
-      this.updateDropper(nextFruit);
+      this.updateDropper(this.nextFruit);
+      this.nextFruit = fruits[Math.floor(Math.random() * 5)];
+      this.game.events.emit('nextFruitChanged', this.nextFruit);
     });
 
     this.matter.world.on(
