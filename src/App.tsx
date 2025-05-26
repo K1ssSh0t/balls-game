@@ -1,29 +1,26 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Phaser from 'phaser';
-//import './style.css'; // Asegúrate de que este archivo CSS esté accesible en tu proyecto React
+// Asegúrate de tener Tailwind CSS configurado en tu proyecto React.
+// No necesitas importar './style.css' si toda tu estilización es con Tailwind,
+// a menos que contenga estilos base o específicos que quieras mantener.
+// import './style.css'; 
 
-// Definición del tipo Fruit
+// --- El tipo Fruit y el array fruits permanecen igual ---
 type Fruit = {
   name: string;
   radius: number;
 };
 
-// Array de frutas
 const fruits: Fruit[] = [
-  { name: 'fruit1', radius: 30 },
-  { name: 'fruit2', radius: 35 },
-  { name: 'fruit3', radius: 40 },
-  { name: 'fruit4', radius: 50 },
-  { name: 'fruit5', radius: 65 },
-  { name: 'fruit6', radius: 70 },
-  { name: 'fruit7', radius: 80 },
-  { name: 'fruit8', radius: 90 },
-  { name: 'fruit9', radius: 100 },
-  { name: 'fruit10', radius: 110 },
+  { name: 'fruit1', radius: 30 }, { name: 'fruit2', radius: 35 },
+  { name: 'fruit3', radius: 40 }, { name: 'fruit4', radius: 50 },
+  { name: 'fruit5', radius: 65 }, { name: 'fruit6', radius: 70 },
+  { name: 'fruit7', radius: 80 }, { name: 'fruit8', radius: 90 },
+  { name: 'fruit9', radius: 100 }, { name: 'fruit10', radius: 110 },
   { name: 'fruit11', radius: 120 },
 ];
 
-// La escena principal del juego (tu código original)
+// --- La clase Main de Phaser permanece igual ---
 class Main extends Phaser.Scene {
   score = 0;
   dropper!: Phaser.GameObjects.Image;
@@ -37,15 +34,11 @@ class Main extends Phaser.Scene {
   }
 
   preload() {
-    // Asegúrate de que estas imágenes estén en tu carpeta 'public' o
-    // configuradas para ser servidas correctamente en tu proyecto React.
     this.load.image('headstone', 'Headstone.png');
     this.load.image('newgame', 'New Game Button.png');
-
     for (let i = 0; i <= 9; i++) {
       this.load.image(`${i}`, `${i}.png`);
     }
-
     for (const fruit of fruits) {
       this.load.image(`${fruit.name}`, `${fruit.name}.png`);
     }
@@ -67,6 +60,8 @@ class Main extends Phaser.Scene {
         }
       }
     });
+
+    this.game.events.emit('nextFruitChanged', fruit);
   }
 
   setDropperX(x: number) {
@@ -172,6 +167,7 @@ class Main extends Phaser.Scene {
         glow.outerStrength = tween.getValue() ?? 1;
       },
     });
+
     this.updateDropper(fruits[0]);
 
     this.ceiling = this.matter.add.rectangle(width / 2, 100, width, 200, { isStatic: true });
@@ -209,7 +205,6 @@ class Main extends Phaser.Scene {
       'collisionstart',
       (event: Phaser.Physics.Matter.Events.CollisionStartEvent) => {
         for (const pair of event.pairs) {
-          // Asegurarnos de que ambos GameObjects existen antes de acceder a 'name'
           const gameObjectA = pair.bodyA.gameObject as Phaser.GameObjects.Image;
           const gameObjectB = pair.bodyB.gameObject as Phaser.GameObjects.Image;
 
@@ -256,9 +251,9 @@ class Main extends Phaser.Scene {
   }
 }
 
-// Configuración del juego Phaser
+// --- La configuración de Phaser permanece igual ---
 const phaserConfig: Phaser.Types.Core.GameConfig = {
-  type: Phaser.AUTO, // O Phaser.WEBGL o Phaser.CANVAS
+  type: Phaser.AUTO,
   scene: [Main],
   width: 600,
   height: 1000,
@@ -271,37 +266,65 @@ const phaserConfig: Phaser.Types.Core.GameConfig = {
     default: 'matter',
     matter: {
       debug: false,
-      // Habilitar 'enableSleeping' puede ayudar con el rendimiento
       enableSleeping: true,
     },
   },
-  // parent: 'phaser-game-container', // Se establecerá dinámicamente
 };
 
-// Componente de React
+// Componente de React (Modificado con Tailwind)
 const App: React.FC = () => {
   const gameRef = useRef<HTMLDivElement>(null);
   const gameInstance = useRef<Phaser.Game | null>(null);
+  const [nextFruit, setNextFruit] = useState<Fruit | null>(null);
 
   useEffect(() => {
     if (gameRef.current && !gameInstance.current) {
-      // Crea la instancia del juego Phaser
+
+      const handleNextFruit = (fruit: Fruit) => {
+        setNextFruit(fruit);
+      };
+
       gameInstance.current = new Phaser.Game({
         ...phaserConfig,
-        parent: gameRef.current, // Asigna el div como padre
+        parent: gameRef.current,
       });
+
+      gameInstance.current.events.on('nextFruitChanged', handleNextFruit);
     }
 
-    // Función de limpieza para destruir el juego cuando el componente se desmonte
     return () => {
       if (gameInstance.current) {
+        gameInstance.current.events.off('nextFruitChanged');
         gameInstance.current.destroy(true);
         gameInstance.current = null;
       }
     };
-  }, []); // El array vacío asegura que esto se ejecute solo una vez (al montar)
+  }, []);
 
-  return <div ref={gameRef} id="phaser-game-container" className='h-[100vh]' />;
+  return (
+    // Contenedor principal con clases de Tailwind
+    <div className="flex  justify-center items-start gap-5 h-[100vh]">
+
+      {/* Contenedor del juego Phaser */}
+      <div ref={gameRef} id="phaser-game-container" className='h-[100vh]' />
+
+      {/* Contenedor para la siguiente fruta con clases de Tailwind */}
+      <div className="w-50 p-5 border-2 mt-4 border-gray-300 rounded-lg text-center bg-gray-50 shadow-md">
+        <h4 className="text-lg font-semibold mb-3 text-gray-700">Siguiente Fruta:</h4>
+        {nextFruit ? (
+          <img
+            src={`/${nextFruit.name}.png`}
+            alt={`Siguiente fruta: ${nextFruit.name}`}
+            // Usamos style para tamaños dinámicos, pero añadimos clases de Tailwind
+            className="block mx-auto max-w-[30px] max-h-[30px]" // Centra la imagen
+
+          />
+        ) : (
+          <p className="text-gray-500">...</p>
+        )}
+      </div>
+    </div>
+  );
 };
 
-export default App; 
+export default App;
