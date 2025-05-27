@@ -55,5 +55,4 @@ export default tseslint.config({
 
 
 ## TODOS:
-- HACER QUE LOS SPRITES DE MUESTREN CORERCTAMENTE
 - Agregar un boton de reinicio
