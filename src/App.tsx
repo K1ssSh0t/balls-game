@@ -82,7 +82,7 @@ class Main extends Phaser.Scene {
       .setDisplaySize(fruit.radius * 2, fruit.radius * 2)
       .setCircle(fruit.radius)
       .setFriction(0.005)
-      .setBounce(0.2)
+      .setBounce(0.5)
       .setDepth(-1)
       .setOnCollideWith(this.ceiling, () => {
         this.events.emit('ceilinghit');
@@ -279,6 +279,15 @@ const App: React.FC = () => {
   const gameInstance = useRef<Phaser.Game | null>(null);
   const [nextFruit, setNextFruit] = useState<Fruit | null>(null);
 
+  const handleRestart = () => {
+    if (gameInstance.current) {
+      const scene = gameInstance.current.scene.getScene('Main') as Main;
+      scene.score = 0;
+      scene.gameOver = false;
+      scene.scene.restart();
+    }
+  };
+
   useEffect(() => {
     if (gameRef.current && !gameInstance.current) {
 
@@ -304,12 +313,16 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    // Contenedor principal con clases de Tailwind
-    <div className="flex  justify-center items-start gap-5 h-[100vh]">
+    <div className='grid grid-cols-3 items-center justify-center h-screen'>
+      <div></div>
 
-      {/* Contenedor del juego Phaser */}
-      <div ref={gameRef} id="phaser-game-container" className='h-[100vh]' />
+      <div className=" justify-center items-start gap-5 h-[100vh] ">
 
+        {/* Contenedor del juego Phaser */}
+        <div ref={gameRef} id="phaser-game-container" className='h-[100vh]' />
+
+
+      </div>
       {/* Contenedor para la siguiente fruta con clases de Tailwind */}
       <div className="w-50 p-5 border-2 mt-4 border-gray-300 rounded-lg text-center bg-gray-50 shadow-md">
         <h4 className="text-lg font-semibold mb-3 text-gray-700">Siguiente Fruta:</h4>
@@ -318,12 +331,19 @@ const App: React.FC = () => {
             src={`/${nextFruit.name}.png`}
             alt={`Siguiente fruta: ${nextFruit.name}`}
             // Usamos style para tamaños dinámicos, pero añadimos clases de Tailwind
-            className="block mx-auto max-w-[30px] max-h-[30px]" // Centra la imagen
+            className="block mx-auto max-w-[50px] max-h-[50px]" // Centra la imagen
 
           />
         ) : (
           <p className="text-gray-500">...</p>
         )}
+
+        <button
+          onClick={handleRestart}
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+        >
+          Reiniciar Juego
+        </button>
       </div>
     </div>
   );
