@@ -313,8 +313,22 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className='grid grid-cols-3 items-center justify-center h-screen'>
-      <div></div>
+    <div className='grid grid-cols-3 items-center justify-center place-items-center h-screen'>
+      <div className="  items-center w-50 p-5 border-2 mt-4 border-gray-300 rounded-lg text-center bg-gray-50 shadow-md">
+        <h4 className="text-lg font-semibold mb-3 text-gray-700">Progresión de Frutas</h4>
+        <div className="grid grid-cols-2 gap-2">
+          {fruits.map((fruit, index) => (
+            <div key={fruit.name} className="flex items-center gap-2 justify-center ">
+              <span className="text-xs text-gray-500">{index + 1}.</span>
+              <img
+                src={`/${fruit.name}.png`}
+                alt={fruit.name}
+                className="w-[50px] h-[50px] object-contain"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
 
       <div className=" justify-center items-start gap-5 h-[100vh] ">
 
