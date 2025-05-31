@@ -125,6 +125,7 @@ class Main extends Phaser.Scene {
     graphics.fillRect(width - 65, 100, 5, height - 100);
     // Bottom border
     graphics.fillRect(65, height - 5, width - 130, 5);
+    graphics.setPipeline('Light2D');
 
     graphics.setDepth(-2);
 
