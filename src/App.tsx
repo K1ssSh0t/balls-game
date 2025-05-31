@@ -35,7 +35,6 @@ class Main extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('headstone', 'Headstone.png');
     this.load.image('newgame', 'New Game Button.png');
     for (let i = 0; i <= 9; i++) {
       this.load.image(`${i}`, `${i}.png`);
@@ -106,12 +105,28 @@ class Main extends Phaser.Scene {
     const width = +this.game.config.width;
     const height = +this.game.config.height;
 
-    this.add
-      .nineslice(0, 0, 'headstone')
-      .setOrigin(0)
-      .setDisplaySize(width, height)
-      .setPipeline('Light2D')
-      .setDepth(-2);
+    // Draw box-like background with borders matching collision boundaries
+    const graphics = this.add.graphics();
+    // Main background
+    graphics.fillStyle(0x222222, 1);
+    graphics.fillRect(0, 0, width, height);
+
+    // Play area background (lighter inside the box)
+    graphics.fillStyle(0x333333, 1);
+    graphics.fillRect(65, 100, width - 130, height - 100);
+
+    // Draw borders to match collision boundaries
+    graphics.fillStyle(0x444444, 1);
+    // Top border
+    graphics.fillRect(65, 100, width - 130, 5);
+    // Left border
+    graphics.fillRect(65, 100, 5, height - 100);
+    // Right border
+    graphics.fillRect(width - 65, 100, 5, height - 100);
+    // Bottom border
+    graphics.fillRect(65, height - 5, width - 130, 5);
+
+    graphics.setDepth(-2);
 
     this.matter.world.setBounds(65, 0, width - 130, height - 1);
     this.group = this.add.group();
