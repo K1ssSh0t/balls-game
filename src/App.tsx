@@ -341,7 +341,7 @@ const App: React.FC = () => {
             <div key={fruit.name} className="flex items-center gap-2 justify-center p-1 rounded-md bg-white/50">
               <span className="text-xs font-bold text-purple-600">{index + 1}.</span>
               <img
-                src={`/${fruit.name}.png`}
+                src={`/balls-game/${fruit.name}.png`}
                 alt={fruit.name}
                 className="w-[50px] h-[50px] object-contain drop-shadow-md"
               />
@@ -359,7 +359,7 @@ const App: React.FC = () => {
         {nextFruit ? (
           <div className="p-3 bg-white/50 rounded-full inline-block">
             <img
-              src={`/${nextFruit.name}.png`}
+              src={`/balls-game/${nextFruit.name}.png`}
               alt={`Next fruit: ${nextFruit.name}`}
               className="block mx-auto w-[60px] h-[60px] object-contain drop-shadow-md"
             />
