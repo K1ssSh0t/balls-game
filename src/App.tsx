@@ -333,50 +333,46 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className='grid grid-cols-3 items-center justify-center place-items-center h-screen'>
-      <div className="  items-center w-50 p-5 border-2 mt-4 border-gray-300 rounded-lg text-center bg-gray-50 shadow-md">
-        <h4 className="text-lg font-semibold mb-3 text-gray-700">Progresión de Frutas</h4>
+    <div className='grid grid-cols-3 items-center justify-center place-items-center h-screen '>
+      <div className="items-center w-50 p-5 border-2 border-purple-300 rounded-lg text-center bg-white/80 shadow-lg backdrop-blur-sm">
+        <h4 className="text-lg font-semibold mb-3 text-purple-800">Fruit Progression</h4>
         <div className="grid grid-cols-2 gap-2">
           {fruits.map((fruit, index) => (
-            <div key={fruit.name} className="flex items-center gap-2 justify-center ">
-              <span className="text-xs text-gray-500">{index + 1}.</span>
+            <div key={fruit.name} className="flex items-center gap-2 justify-center p-1 rounded-md bg-white/50">
+              <span className="text-xs font-bold text-purple-600">{index + 1}.</span>
               <img
                 src={`/${fruit.name}.png`}
                 alt={fruit.name}
-                className="w-[50px] h-[50px] object-contain"
+                className="w-[50px] h-[50px] object-contain drop-shadow-md"
               />
             </div>
           ))}
         </div>
       </div>
 
-      <div className=" justify-center items-start gap-5 h-[100vh] ">
-
-        {/* Contenedor del juego Phaser */}
+      <div className="justify-center items-start gap-5 h-[100vh]">
         <div ref={gameRef} id="phaser-game-container" className='h-[100vh]' />
-
-
       </div>
-      {/* Contenedor para la siguiente fruta con clases de Tailwind */}
-      <div className="w-50 p-5 border-2 mt-4 border-gray-300 rounded-lg text-center bg-gray-50 shadow-md">
-        <h4 className="text-lg font-semibold mb-3 text-gray-700">Siguiente Fruta:</h4>
-        {nextFruit ? (
-          <img
-            src={`/${nextFruit.name}.png`}
-            alt={`Siguiente fruta: ${nextFruit.name}`}
-            // Usamos style para tamaños dinámicos, pero añadimos clases de Tailwind
-            className="block mx-auto max-w-[50px] max-h-[50px]" // Centra la imagen
 
-          />
+      <div className="w-50 p-5 border-2 border-purple-300 rounded-lg text-center bg-white/80 shadow-lg backdrop-blur-sm">
+        <h4 className="text-lg font-semibold mb-3 text-purple-800">Next Fruit:</h4>
+        {nextFruit ? (
+          <div className="p-3 bg-white/50 rounded-full inline-block">
+            <img
+              src={`/${nextFruit.name}.png`}
+              alt={`Next fruit: ${nextFruit.name}`}
+              className="block mx-auto w-[60px] h-[60px] object-contain drop-shadow-md"
+            />
+          </div>
         ) : (
           <p className="text-gray-500">...</p>
         )}
 
         <button
           onClick={handleRestart}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+          className="mt-4 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full hover:from-purple-600 hover:to-pink-600 transition-all shadow-md hover:shadow-lg active:scale-95"
         >
-          Reiniciar Juego
+          Restart Game
         </button>
       </div>
     </div>
