@@ -29,6 +29,7 @@ class Main extends Phaser.Scene {
   gameOver = false;
   renderTexture!: Phaser.GameObjects.RenderTexture;
   nextFruit!: Fruit;
+  // mergeSound!: Phaser.Sound.BaseSound; // Add sound property
 
   constructor() {
     super({ key: 'Main' });
@@ -42,6 +43,7 @@ class Main extends Phaser.Scene {
     for (const fruit of fruits) {
       this.load.image(`${fruit.name}`, `${fruit.name}.png`);
     }
+    this.load.audio('mergeSound', 'merge.wav'); // Add sound loading
   }
 
   updateDropper(fruit: Fruit) {
@@ -227,6 +229,8 @@ class Main extends Phaser.Scene {
           const gameObjectB = pair.bodyB.gameObject as Phaser.GameObjects.Image;
 
           if (gameObjectA && gameObjectB && gameObjectA.name === gameObjectB.name) {
+            this.sound.play('mergeSound'); // Play merge sound
+
             const fruitIndex = fruits.findIndex((fruit) => fruit.name === gameObjectA.name);
 
             if (fruitIndex === -1) {
